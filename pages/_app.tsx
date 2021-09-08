@@ -1,11 +1,17 @@
 import type { AppProps } from "next/app";
 import { ChakraProvider } from "@chakra-ui/react";
+import { QueryClientProvider, QueryClient } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
+const client = new QueryClient();
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ChakraProvider>
-      <Component {...pageProps} />
-    </ChakraProvider>
+    <QueryClientProvider client={client}>
+      <ChakraProvider>
+        <Component {...pageProps} />
+      </ChakraProvider>
+      <ReactQueryDevtools />
+    </QueryClientProvider>
   );
 }
 export default MyApp;

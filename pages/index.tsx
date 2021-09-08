@@ -1,4 +1,5 @@
 import type { NextPage } from "next";
+import NextLink from "next/link";
 import {
   Container,
   Text,
@@ -24,7 +25,9 @@ const Home: NextPage = () => {
       <Center>
         <ButtonGroup colorScheme="blue" variant="outline" mt="8">
           <VStack spacing={8}>
-            <Button>Example with CoinGecko API</Button>
+            <Button>
+              <NextLink href="/coin">Example with CoinGecko API</NextLink>
+            </Button>
             <Button>Example of Mutation in React Query</Button>
           </VStack>
         </ButtonGroup>
