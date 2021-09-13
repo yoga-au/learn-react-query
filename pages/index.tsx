@@ -26,7 +26,7 @@ const Home: NextPage = () => {
         <ButtonGroup colorScheme="blue" variant="outline" mt="8">
           <VStack spacing={8}>
             <Button>
-              <NextLink href="/coin">Example with CoinGecko API</NextLink>
+              <NextLink href="/coins">Example with CoinGecko API</NextLink>
             </Button>
             <Button>Example of Mutation in React Query</Button>
           </VStack>
