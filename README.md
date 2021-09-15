@@ -98,3 +98,22 @@ const { data, isSuccess, isError, isFetching, isLoading } = useQuery(
   }
 );
 ```
+
+## Simple Pagination
+
+To make a good performing pagination, we need to make **query** based on the current page. The query in `useQuery` accept an array. In this example, we make query from `"coins"` to `["coins", page]`. This separate query for each page, whenever page are not rendered in the browser, they will enter `inactive` state and the data for inactive query stored in cache will persist for some time.
+
+```tsx
+// state
+const [page, setPage] = useState(1);
+
+// useQuery react query
+const { data, isSuccess, isError, isFetching, isLoading } = useQuery(
+  ["coins", page],
+  () => getCoins(page),
+  {
+    staleTime: 3000, // ms
+    refetchInterval: 5000,
+  }
+);
+```

@@ -1,5 +1,9 @@
+// type import
 import type { NextPage } from "next";
 import type { Coin } from "../../types/type";
+
+// non-custom component import
+import { useState } from "react";
 import NextImage from "next/image";
 import {
   Container,
@@ -14,6 +18,8 @@ import {
   HStack,
   Skeleton,
   Spinner,
+  Grid,
+  Button,
 } from "@chakra-ui/react";
 import { useQuery } from "react-query";
 
@@ -26,9 +32,13 @@ import {
 import getCoins from "../../utils/getCoins";
 
 const Coins: NextPage = () => {
+  // state
+  const [page, setPage] = useState(1);
+
+  // useQuery react query
   const { data, isSuccess, isError, isFetching, isLoading } = useQuery(
-    "coins",
-    getCoins,
+    ["coins", page],
+    () => getCoins(page),
     {
       staleTime: 3000, // ms
       refetchInterval: 5000,
@@ -87,6 +97,26 @@ const Coins: NextPage = () => {
           </Tbody>
         </Table>
       </Skeleton>
+      <Grid w="full" templateColumns="70% 1fr auto 1fr" gap={8} my={10}>
+        <div></div>
+        <Button
+          colorScheme="facebook"
+          variant="outline"
+          onClick={() => setPage((prevState) => prevState - 1)}
+          disabled={page === 1 ? true : false}
+        >
+          Previous
+        </Button>
+        <div>{page}</div>
+        <Button
+          colorScheme="facebook"
+          variant="outline"
+          onClick={() => setPage((prevState) => prevState + 1)}
+          // disabled={page === 1 ? true : false}
+        >
+          Next
+        </Button>
+      </Grid>
     </Container>
   );
 };
