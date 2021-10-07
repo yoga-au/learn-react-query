@@ -8,3 +8,7 @@ export type Coin = {
   price_change_percentage_24h: number;
   total_volume: number;
 };
+
+export type InitialCoinsProps = {
+  initialData: Coin[];
+};

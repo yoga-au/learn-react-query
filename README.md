@@ -117,3 +117,58 @@ const { data, isSuccess, isError, isFetching, isLoading } = useQuery(
   }
 );
 ```
+
+## React Query SSR
+
+There's two approach when you want to fetch data with `useQuery` in SSR, with `initialData` and `Hydration`
+
+### SSR Using initialData
+
+First, export an asynchronous `getStaticProps` function. Inside that function we can return an object with `props` properties, `props` value is an object and we can add our data from our fetcher function.
+
+```ts
+export async function getStaticProps() {
+  const initialData = await getCoins();
+
+  return { props: { initialData } };
+}
+```
+
+After that, we can accept the props in the **page component**. In the `useQuery` hooks options, we can add another property which is `initialData`, pass the props from `getStaticProps` to the `initialData`.
+
+```tsx
+const { data, isSuccess, isError, isFetching, isLoading } = useQuery(
+  ["coins", page],
+  () => getCoins(page),
+  {
+    staleTime: 3000, // ms
+    refetchInterval: 5000,
+    initialData: initialData, // this is from props
+  }
+);
+```
+
+**Note:** The drawback using initialData approach is, we you want to use `useQuery` hooks in deeply nested component inside, you need to pass initial data down, [More detail check this docs from react query](https://react-query.tanstack.com/guides/ssr)
+
+### SSR using Hydration
+
+To use **Hydration** approach instead of initialData, we need to setup our Hydration in the `_app.tsx`. Import `Hydrate` from React Query, then place `<Hydrate>` inside `QueryClientProvider`. Pass `pageProps.dehydratedState` to the `state` props in `Hydrate`.
+
+```tsx
+function MyApp({ Component, pageProps }: AppProps) {
+  const [queryClient] = useState(() => new QueryClient());
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Hydrate state={pageProps.dehydratedState}>
+        <ChakraProvider>
+          <Component {...pageProps} />
+        </ChakraProvider>
+        <ReactQueryDevtools />
+      </Hydrate>
+    </QueryClientProvider>
+  );
+}
+```
+
+After that, we can export `getStaticProps` in our page component, in that function, create a `queryClient` instance. Then we await our data by using `prefetchQuery`. `prefetcQuery` method take parameter `(queryKey, fetcherFunction)`
